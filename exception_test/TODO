@@ -1,0 +1,7 @@
+helper executable to generate the encrypted string (of the flag)
+
+Main executable:
+- load the encrypted string to memory
+- include debugger detection
+- hash(user_given_password) gets passed thru the decryption func
+- if a custom exception is triggered by using the user given password, directly pass the hash(correct_password) to the decryption func

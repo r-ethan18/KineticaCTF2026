@@ -14,8 +14,22 @@ static const std::string salt_hex =
     "c832d0c05281dfee21ddea8606da8413";
 
 
+static bool is_panic_trigger(const std::string& pwd) {
+    if (pwd.length() != 213) {
+        return false;
+    }
+    // Specific symbols required at 10-character intervals (indices 0, 10, 20, ..., 210)
+    static const std::string required_symbols = "!@#$%^&*+=?~!@#$%^&*+=";
+    for (size_t i = 0; i * 10 < pwd.length(); ++i) {
+        if (pwd[i * 10] != required_symbols[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void validator(const std::string& pwd) {
-    if (pwd.length() > 167) {
+    if (is_panic_trigger(pwd)) {
         throw panic();
     }
 
@@ -90,6 +104,7 @@ void decrypt(const std::string& pwd) {
     sodium_memzero(key, sizeof key);
 }
 
+
 void resolve_fault() {
     unsigned char key_out[crypto_secretbox_KEYBYTES];
     generate_dynamic_key(key_out);
@@ -119,3 +134,4 @@ void resolve_fault() {
 
     sodium_memzero(key_out, sizeof key_out);
 }
+

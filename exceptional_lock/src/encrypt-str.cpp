@@ -12,12 +12,10 @@ int main()
         return 1;
     }
 
-    const std::string password =
-        "correct horse battery staple";
+    const std::string password = "PD}7G:NCSN1bq1!INatl5:!£";
+    const std::string message = "snuc{Davinci_dice_Sono_stanco_capo}";
 
-    const std::string message =
-        "test";
-
+    std::cout << "Message Length = " << message.length() << std::endl;
     /*
      * A custom 24-byte nonce represented as 48 hexadecimal characters.
      *
@@ -83,7 +81,7 @@ int main()
     print_hex("Salt:       ", salt, sizeof salt);
     print_hex("Nonce:      ", nonce, sizeof nonce);
     print_hex("Ciphertext: ", ciphertext.data(), ciphertext.size());
-
+    print_hex("Key:        ", key, sizeof key);
     /*
      * Decryption.
      *

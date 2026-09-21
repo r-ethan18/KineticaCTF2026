@@ -56,7 +56,7 @@ This generates two binaries:
 - **Input**: A 213-character string containing the symbol sequence `!@#$%^&*+=?~!@#$%^&*+=` placed at index intervals `0, 10, 20, 30, ..., 210`.
 - **Sample Payload**:
   ```text
-  !AAAAAAAAAA@AAAAAAAAAA#AAAAAAAAAA$AAAAAAAAAA%AAAAAAAAAA^AAAAAAAAAA&AAAAAAAAAA*AAAAAAAAAA+AAAAAAAAAA=AAAAAAAAAA?AAAAAAAAAA~AAAAAAAAAA!AAAAAAAAAA@AAAAAAAAAA#AAAAAAAAAA$AAAAAAAAAA%AAAAAAAAAA^AAAAAAAAAA&AAAAAAAAAA*AAAAAAAAAA+AAAAAAAAAA=AA
+  !xxxxxxxxx@xxxxxxxxx#xxxxxxxxx$xxxxxxxxx%xxxxxxxxx^xxxxxxxxx&xxxxxxxxx*xxxxxxxxx+xxxxxxxxx=xxxxxxxxx?xxxxxxxxx~xxxxxxxxx!xxxxxxxxx@xxxxxxxxx#xxxxxxxxx$xxxxxxxxx%xxxxxxxxx^xxxxxxxxx&xxxxxxxxx*xxxxxxxxx+xxxxxxxxx=xx
   ```
 - **Flag**: `snuc{Davinci_dice_Sono_stanco_capo}`
 

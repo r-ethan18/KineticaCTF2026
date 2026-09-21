@@ -22,6 +22,7 @@ target_link_libraries(encrypt-str PRIVATE sodium)
 
 set (MAIN_SRC
   src/main-lock.cpp
+  src/validator.cpp
   src/helpers.cpp
   src/backup.cpp
 )

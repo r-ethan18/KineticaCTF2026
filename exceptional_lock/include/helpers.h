@@ -1,3 +1,6 @@
+#ifndef HELPERS_H
+#define HELPERS_H
+
 #include <sodium.h>
 #include <string>
 
@@ -8,3 +11,5 @@ void print_hex(const char *label,
 bool decode_hex(const std::string& hex,
                 unsigned char* output,
                 std::size_t output_length);
+
+#endif

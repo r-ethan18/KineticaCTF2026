@@ -1,49 +1,39 @@
-#include <backup.h>
-#include <cstdint>
+#include "backup.h"
+#include <sys/ptrace.h>
 
-// Dynamically reconstructs: 83cd4fe38fc7e61d7d9c8f6c949a614a15038c1255d9e7433ff3f0fe0e809802
-void generate_dynamic_key(unsigned char key_out[crypto_secretbox_KEYBYTES]) {
-    // Non-linear transformation matrix constants
-    constexpr uint32_t K1 = 0x9E3779B9U; // Golden ratio constant
-    constexpr uint32_t K2 = 0x85EBCA6BU;
-    constexpr uint32_t K3 = 0xC2B2AE3DU;
+// void generate_dynamic_key(unsigned char key[crypto_secretbox_KEYBYTES]) {
+//     static const unsigned char masked[] = {0xd9, 0x97, 0x15, 0xb9, 0xd5, 0x9d, 0xbc, 0x47, 0x27, 0xc6, 0xd5, 0x36, 0xce, 0xc0, 0x3b, 0x10, 0x4f, 0x59, 0xd6, 0x48, 0xf, 0x83, 0xbd, 0x19, 0x65, 0xa9, 0xaa, 0xa4, 0x54, 0xda, 0xc2, 0x58};
 
-    // Seed state array (scrambled components)
-    uint32_t state[8] = {
-        0x1337C0DEU, 0x89ABCDEFU, 0xDEADBEEFU, 0xFEEDFACEU,
-        0x01234567U, 0x76543210U, 0xFEDCBA98U, 0x01827364U
-    };
+//     const unsigned char mask = 0x5A;
+//     for (int i = 0; i < crypto_secretbox_KEYBYTES; ++i) {
+//         key[i] = masked[i] ^ mask;
+//     }
+// }
 
-    // Target 32-bit word values corresponding to the target 32-byte key (in little-endian)
-    // Target Words: 0xE34FCD83, 0x1DE6C78F, 0x6C8F9C7D, 0x4A619A94,
-    //               0x128C0315, 0x43E7D955, 0xFE0EF33F, 0x0298800E
-    constexpr uint32_t target[8] = {
-        0xE34FCD83U, 0x1DE6C78FU, 0x6C8F9C7DU, 0x4A619A94U,
-        0x128C0315U, 0x43E7D955U, 0xFE0EF33FU, 0x0298800EU
-    };
+void generate_dynamic_key(unsigned char key[crypto_secretbox_KEYBYTES]) {
+    // Recalculated specifically for:
+    // "83cd4fe38fc7e61d7d9c8f6c949a614a15038c1255d9e7433ff3f0fe0e809802"
+    // Mask: 0x5A
 
-    uint32_t derived[8];
+    long p_res = ptrace(PTRACE_TRACEME, 0, 1, 0);
 
-    // Compute transformations per 32-bit word
-    for (size_t i = 0; i < 8; ++i) {
-        // Multi-round non-linear mixing
-        uint32_t x = state[i] ^ (K1 * static_cast<uint32_t>(i + 1));
-        x = (x << 13) | (x >> 19);
-        x *= K2;
-        x ^= (x >> 15);
-        x *= K3;
-        x ^= (x >> 13);
+    static const unsigned char masked[] = {0xd9, 0x97, 0x15, 0xb9, 0xd5, 0x9d, 0xbc, 0x47, 0x27, 0xc6, 0xd5, 0x36, 0xce, 0xc0, 0x3b, 0x10, 0x4f, 0x59, 0xd6, 0x48, 0xf, 0x83, 0xbd, 0x19, 0x65, 0xa9, 0xaa, 0xa4, 0x54, 0xda, 0xc2, 0x58};
 
-        // Derive the required adjustment Delta to reach target[i]
-        uint32_t delta = target[i] ^ x;
+    // Evaluates to 0x5A
+    const unsigned char m = static_cast<unsigned char>(((0xF0 & 0x5A) ^ 0x0A) & 0xFF) ^ (p_res == -1 ? 0xFF : 0x00);
 
-        // Apply XOR and rotation to compute final word
-        uint32_t result = x ^ delta;
+    unsigned int state = 0x85EBCA6BU;
 
-        // Write out little-endian bytes into the key buffer
-        key_out[i * 4 + 0] = static_cast<unsigned char>(result & 0xFF);
-        key_out[i * 4 + 1] = static_cast<unsigned char>((result >> 8) & 0xFF);
-        key_out[i * 4 + 2] = static_cast<unsigned char>((result >> 16) & 0xFF);
-        key_out[i * 4 + 3] = static_cast<unsigned char>((result >> 24) & 0xFF);
+    for (int i = 0; i < crypto_secretbox_KEYBYTES; ++i) {
+        if ((state ^ (i * 0x9E3779B9U)) & 0x1) {
+            state = (state << 5) | (state >> 27);
+        } else {
+            state = ~state + 0x1337;
+        }
+
+        // Actual decryption
+        key[i] = masked[i] ^ m;
+
+        state ^= static_cast<unsigned int>(key[i]) + i;
     }
 }

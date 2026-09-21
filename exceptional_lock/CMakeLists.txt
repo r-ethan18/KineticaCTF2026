@@ -10,7 +10,7 @@ set(sodium_USE_STATIC_LIBS TRUE)
 # Find the package using your cmake/FindSodium.cmake
 find_package(Sodium REQUIRED)
 
-include_directories(include)
+include_directories(include ${sodium_INCLUDE_DIR})
 
 set (ENC_STR_SRC
   src/encrypt-str.cpp

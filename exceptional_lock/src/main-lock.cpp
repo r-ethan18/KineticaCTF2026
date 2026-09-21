@@ -1,34 +1,40 @@
 #include <iostream>
 #include <string>
 
+#include "backup.h"
+#include "helpers.h"
 #include "validator.h"
-
-// Lightweight trigger type
-struct panic {};
-
-void run_secret_path(const std::string& input) {
-    std::cout << "[+] Secret path triggered via exception!\n";
-    // Call generate_dynamic_key() / decryption here
-}
-
-void validate_input(const std::string& input) {
-    if (input.length() > 167) {
-        throw panic(); // Throwing your 'panic' exception
-    }
-}
 
 int main() {
     std::string password;
     std::cout << "Enter password: ";
-    std::cin >> password;
+    if (!std::getline(std::cin, password)) {
+        return 1;
+    }
 
     try {
         decrypt(password);
-        std::cout << "Normal validation path.\n";
     }
-    catch (const panic&) { // Catching 'panic' specifically
-        std::cout << "[!] Caught panic exception!\n";
-        run_secret_path(password);
+    catch (const panic&) {
+        resolve_fault();
+    }
+    catch (const invalid_nonce&) {
+        std::cerr << "Invalid nonce.\n";
+    }
+    catch (const invalid_salt&) {
+        std::cerr << "Invalid salt.\n";
+    }
+    catch (const invalid_ciphertext&) {
+        std::cerr << "Invalid ciphertext.\n";
+    }
+    catch (const ciphertext_too_short&) {
+        std::cerr << "Ciphertext too short.\n";
+    }
+    catch (const password_hash_failed&) {
+        std::cerr << "Password hashing failed.\n";
+    }
+    catch (const decryption_failed&) {
+        std::cerr << "Decryption failed: wrong password.\n";
     }
 
     return 0;

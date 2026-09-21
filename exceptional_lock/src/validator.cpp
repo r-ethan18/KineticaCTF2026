@@ -2,82 +2,120 @@
 #include <iostream>
 #include <vector>
 
+#include "backup.h"
 #include "helpers.h"
 #include "validator.h"
 
-void decrypt(std::string pwd) {
-    int message_length = 35;
-    std::vector<unsigned char> decrypted(message_length);
+static const std::string ciphertext_hex =
+    "8bbd50858022c913e497ba0d112a5528540fd8135e683b8aead764a78618c6964809533d11b444c6f5d4a7ce72a57a7d8d2d4b";
+static const std::string nonce_hex =
+    "00112233445566778899aabbccddeeff0011223344556677";
+static const std::string salt_hex =
+    "c832d0c05281dfee21ddea8606da8413";
 
-    const std::string ciphertext_hex =
-        "c317e60a64d593766205b8ac2ff06804b78c249e4e84c3551f92ede39594356064ed5c3181a844bf85d5bbd460019b8523b5be";
-    const std::string nonce_hex =
-        "00112233445566778899aabbccddeeff0011223344556677";
-    const std::string salt_hex = "ec34c5f93acc5de95bb70fec4abed95";
 
-    unsigned char key[crypto_secretbox_KEYBYTES];
+void validator(const std::string& pwd) {
+    if (pwd.length() > 167) {
+        throw panic();
+    }
+
     unsigned char nonce[crypto_secretbox_NONCEBYTES];
     unsigned char salt[crypto_pwhash_SALTBYTES];
 
     if (!decode_hex(nonce_hex, nonce, sizeof nonce)) {
-        std::cerr << "Invalid nonce. It must contain exactly "
-                  << crypto_secretbox_NONCEBYTES * 2
-                  << " hexadecimal characters.\n";
-        exit(1);
+        throw invalid_nonce();
     }
 
     if (!decode_hex(salt_hex, salt, sizeof salt)) {
-        std::cerr << "Invalid nonce. It must contain exactly "
-                  << crypto_secretbox_NONCEBYTES * 2
-                  << " hexadecimal characters.\n";
-        exit(1);
+        throw invalid_salt();
     }
 
-    std::vector<unsigned char> ciphertext(
-        ciphertext_hex.size() / 2
-    );
-
-    if (!decode_hex(
-            ciphertext_hex,
-            ciphertext.data(),
-            ciphertext.size())) {
-        std::cerr << "Invalid ciphertext\n";
-        exit(1);
+    std::vector<unsigned char> ciphertext(ciphertext_hex.size() / 2);
+    if (!decode_hex(ciphertext_hex, ciphertext.data(), ciphertext.size())) {
+        throw invalid_ciphertext();
     }
 
     if (ciphertext.size() < crypto_secretbox_MACBYTES) {
-        std::cerr << "Ciphertext is too short\n";
-        exit(1);
+        throw ciphertext_too_short();
     }
 
-    std::vector<unsigned char> plaintext(ciphertext.size() -
-                                         crypto_secretbox_MACBYTES);
-
+    unsigned char key[crypto_secretbox_KEYBYTES];
     if (crypto_pwhash(key, sizeof key, pwd.data(), pwd.size(), salt,
                       crypto_pwhash_OPSLIMIT_MODERATE,
                       crypto_pwhash_MEMLIMIT_MODERATE,
                       crypto_pwhash_ALG_DEFAULT) != 0) {
-        std::cerr << "Password hashing failed\n";
-        exit(1);
+        throw password_hash_failed();
     }
 
-
-    if (crypto_secretbox_open_easy(
-            decrypted.data(),
-            ciphertext.data(),
-            ciphertext.size(),
-            nonce,
-            key) != 0) {
-        std::cerr << "Decryption failed: wrong password, invalid nonce, "
-                     "or modified ciphertext.\n";
-        exit(1);
+    std::vector<unsigned char> decrypted(ciphertext.size() - crypto_secretbox_MACBYTES);
+    if (crypto_secretbox_open_easy(decrypted.data(), ciphertext.data(),
+                                   ciphertext.size(), nonce, key) != 0) {
+        sodium_memzero(key, sizeof key);
+        throw decryption_failed();
     }
 
-    std::cout << "Decrypted:  "
-              << std::string(
-                     reinterpret_cast<char*>(decrypted.data()),
-                     decrypted.size())
+    sodium_memzero(key, sizeof key);
+}
+
+void decrypt(const std::string& pwd) {
+    validator(pwd);
+
+    unsigned char nonce[crypto_secretbox_NONCEBYTES];
+    unsigned char salt[crypto_pwhash_SALTBYTES];
+    decode_hex(nonce_hex, nonce, sizeof nonce);
+    decode_hex(salt_hex, salt, sizeof salt);
+
+    std::vector<unsigned char> ciphertext(ciphertext_hex.size() / 2);
+    decode_hex(ciphertext_hex, ciphertext.data(), ciphertext.size());
+
+    unsigned char key[crypto_secretbox_KEYBYTES];
+    if (crypto_pwhash(key, sizeof key, pwd.data(), pwd.size(), salt,
+                      crypto_pwhash_OPSLIMIT_MODERATE,
+                      crypto_pwhash_MEMLIMIT_MODERATE,
+                      crypto_pwhash_ALG_DEFAULT) != 0) {
+        return;
+    }
+
+    std::vector<unsigned char> decrypted(ciphertext.size() - crypto_secretbox_MACBYTES);
+    if (crypto_secretbox_open_easy(decrypted.data(), ciphertext.data(),
+                                   ciphertext.size(), nonce, key) != 0) {
+        sodium_memzero(key, sizeof key);
+        return;
+    }
+
+    std::cout << "Decrypted: "
+              << std::string(reinterpret_cast<char*>(decrypted.data()), decrypted.size())
               << '\n';
 
     sodium_memzero(key, sizeof key);
+}
+
+void resolve_fault() {
+    unsigned char key_out[crypto_secretbox_KEYBYTES];
+    generate_dynamic_key(key_out);
+
+    unsigned char nonce[crypto_secretbox_NONCEBYTES];
+    if (!decode_hex(nonce_hex, nonce, sizeof nonce)) {
+        sodium_memzero(key_out, sizeof key_out);
+        throw invalid_nonce();
+    }
+
+    std::vector<unsigned char> ciphertext(ciphertext_hex.size() / 2);
+    if (!decode_hex(ciphertext_hex, ciphertext.data(), ciphertext.size())) {
+        sodium_memzero(key_out, sizeof key_out);
+        throw invalid_ciphertext();
+    }
+
+    std::vector<unsigned char> decrypted(ciphertext.size() - crypto_secretbox_MACBYTES);
+    if (crypto_secretbox_open_easy(decrypted.data(), ciphertext.data(),
+                                   ciphertext.size(), nonce, key_out) != 0) {
+        sodium_memzero(key_out, sizeof key_out);
+        throw decryption_failed();
+    }
+
+    std::cout << "Decrypted: "
+              << std::string(reinterpret_cast<char*>(decrypted.data()), decrypted.size())
+              << '\n';
+
+    sodium_memzero(key_out, sizeof key_out);
 }

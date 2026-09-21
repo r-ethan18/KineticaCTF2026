@@ -26,13 +26,7 @@ set (MAIN_SRC
   src/helpers.cpp
   src/backup.cpp
 )
-add_executable(decrypt-str "${MAIN_SRC}")
-target_link_libraries(decrypt-str PRIVATE sodium)
+add_executable(exceptional-locking-mechanism "${MAIN_SRC}")
+target_link_libraries(exceptional-locking-mechanism PRIVATE sodium)
 
-# add_executable(sodium_static src/sodium-test.cpp)
-# target_link_libraries(sodium_static PRIVATE sodium)
 
-# # 7. Windows compilation flag
-# if(WIN32)
-#     target_compile_definitions(sodium_static PRIVATE SODIUM_STATIC=1)
-# endif()

@@ -1,40 +1,38 @@
 #include <iostream>
 #include <string>
 
-#include "backup.h"
-#include "helpers.h"
 #include "validator.h"
 
 int main() {
     std::string password;
-    std::cout << "Enter password: ";
+    std::cout << "Turn your key! Or as you call it:\n \"Enter password\": ";
     if (!std::getline(std::cin, password)) {
         return 1;
     }
 
     try {
         decrypt(password);
-    }
-    catch (const panic&) {
+    } catch (const panic &) {
+        std::cerr << "Something went horribly wrong...\n";
         resolve_fault();
     }
     catch (const invalid_nonce&) {
-        std::cerr << "Invalid nonce.\n";
+        std::cerr << "I must check the nonce value...\n";
     }
     catch (const invalid_salt&) {
-        std::cerr << "Invalid salt.\n";
+        std::cerr << "Too salty!\n";
     }
     catch (const invalid_ciphertext&) {
-        std::cerr << "Invalid ciphertext.\n";
+        std::cerr << "Rusty lock...\n";
     }
     catch (const ciphertext_too_short&) {
-        std::cerr << "Ciphertext too short.\n";
+        std::cerr << "Lock smaller than expected!\n";
     }
     catch (const password_hash_failed&) {
-        std::cerr << "Password hashing failed.\n";
+        std::cerr << "Can't turn the key!\n";
     }
     catch (const decryption_failed&) {
-        std::cerr << "Decryption failed: wrong password.\n";
+        std::cerr << "Can't open this lock!\n";
     }
 
     return 0;

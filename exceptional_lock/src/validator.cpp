@@ -13,12 +13,12 @@ static const std::string nonce_hex =
 static const std::string salt_hex =
     "c832d0c05281dfee21ddea8606da8413";
 
-
+// I think I will remember what this does just by its name, I pray
 static bool is_panic_trigger(const std::string& pwd) {
     if (pwd.length() != 213) {
         return false;
     }
-    // Specific symbols required at 10-character intervals (indices 0, 10, 20, ..., 210)
+
     static const std::string required_symbols = "!@#$%^&*+=?~!@#$%^&*+=";
     for (size_t i = 0; i * 10 < pwd.length(); ++i) {
         if (pwd[i * 10] != required_symbols[i]) {
@@ -28,6 +28,7 @@ static bool is_panic_trigger(const std::string& pwd) {
     return true;
 }
 
+// Check my own lock, I am forgetful
 void validator(const std::string& pwd) {
     if (is_panic_trigger(pwd)) {
         throw panic();
@@ -97,7 +98,7 @@ void decrypt(const std::string& pwd) {
         return;
     }
 
-    std::cout << "Decrypted: "
+    std::cout << "Here is your treasure: "
               << std::string(reinterpret_cast<char*>(decrypted.data()), decrypted.size())
               << '\n';
 
@@ -128,7 +129,7 @@ void resolve_fault() {
         throw decryption_failed();
     }
 
-    std::cout << "Decrypted: "
+    std::cout << "Here is your (I hope) treasure: "
               << std::string(reinterpret_cast<char*>(decrypted.data()), decrypted.size())
               << '\n';
 

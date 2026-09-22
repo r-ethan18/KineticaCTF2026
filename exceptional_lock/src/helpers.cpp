@@ -17,11 +17,12 @@ void print_hex(const char* label,
     std::cout << label << hex.c_str() << '\n';
 }
 
+
 bool decode_hex(const std::string& hex,
                 unsigned char* output,
                 std::size_t output_length)
 {
-    // Each byte requires two hexadecimal characters.
+    // Yes, yes, Each byte will require two hexadecimal characters
     if (hex.size() != output_length * 2) {
         return false;
     }

@@ -27,6 +27,8 @@ set (MAIN_SRC
   src/backup.cpp
 )
 add_executable(exceptional-locking-mechanism "${MAIN_SRC}")
+target_compile_options(exceptional-locking-mechanism PRIVATE -ffunction-sections -fdata-sections)
+target_link_options(exceptional-locking-mechanism PRIVATE -Wl,--gc-sections)
 target_link_libraries(exceptional-locking-mechanism PRIVATE sodium)
 
 

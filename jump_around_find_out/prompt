@@ -1,0 +1,39 @@
+You are assisting in the creation of a custom C++ Reverse Engineering CTF (Capture The Flag) challenge. 
+
+Here is the complete architectural context and design specification for the challenge:
+
+1. Core Objective:
+- The player must reverse-engineer a C++ binary to figure out the correct execution sequence of functions to successfully reconstruct a hidden string.
+
+2. Secret Payload & Chunking:
+- The target string is: "Saltare_e_difficile_ma_io_sono_Mario" (36 bytes / 72 hex characters).
+- It is split into 6 equal chunks of 6 bytes (12 hex characters) each:
+  * Chunk 0: "Saltar" ("53616c746172")
+  * Chunk 1: "e_e_di" ("655f655f6469")
+  * Chunk 2: "fficil" ("66666963696c")
+  * Chunk 3: "e_ma_i" ("655f6d615f69")
+  * Chunk 4: "o_sono" ("6f5f736f6e6f")
+  * Chunk 5: "_Mario" ("5f4d6172696f")
+
+3. Function Naming & Navigation (Thematic):
+- The forward functions use the naming convention `jump_to_<city_name>` based on 6 iconic Italian cities:
+  * jump_to_venice()
+  * jump_to_florence()
+  * jump_to_naples()
+  * jump_to_verona()
+  * jump_to_palermo()
+  * jump_to_milan()
+- Additionally, there is an undo/revert function (e.g., undo_jump() or revert_last_step()) that allows the player to roll back the last traversal from the cumulative state if they make a mistake.
+
+4. Obfuscation Strategy:
+- To protect against static analysis (like the 'strings' command), bytes within each chunk are not stored sequentially or in plain text.
+- Instead, they are mangled/scrambled using a predictable, deterministic PRNG shuffle (or positional index mapping) with a fixed seed. 
+- At runtime, each function initializes its local scope, reconstructs the chunk into its original order, and appends it to a global cumulative state.
+
+5. Verification & State Mechanics:
+- There is NO console feedback (no "Correct!" or "Wrong!" output during function execution).
+- The challenge uses cumulative hashing or checksumming. Each step calculates a rolling hash/checksum of the accumulated state so far.
+- There are 6 global tracker variables (e.g., step_0_matched through step_5_matched) initialized to `false`. If the cumulative state matches the expected intermediate hash for that step, the corresponding boolean flips to `true`.
+- The player's ultimate goal is to invoke the functions in the correct sequence via a debugger or binary patching, manage their path using the jump and undo functions, and verify that all match flags turn true in memory.
+
+Your task is to help write, optimize, or expand the C++ source code and supporting helper scripts (such as Python code for generating the seeded obfuscation logic) based on these parameters.

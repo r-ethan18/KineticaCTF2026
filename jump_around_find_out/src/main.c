@@ -1,10 +1,9 @@
-/* Auto-generated C CTF Challenge source */
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "sha256_wrapper.h"
 
-/* Expected rolling SHA-256 hashes for each step */
+// Must check carefully!
 const char EXPECTED_HASH_0[] = "ecebe9dfe1aa99e55029c50d8d8c8038530f157dbbf2c0cd42f9a2969ec6732b";
 const char EXPECTED_HASH_1[] = "c23808cb02b93de5a8befe1678937e30d4633bec2fd076f7667cb5c47ae063bb";
 const char EXPECTED_HASH_2[] = "0ac0bd52c1dc5c1275adbf75b58d74d36170e208d80fbe257172a75d5bd57c51";
@@ -12,12 +11,11 @@ const char EXPECTED_HASH_3[] = "21cc6294913987c2a9c7648257142abcc3e00443344c1c2d
 const char EXPECTED_HASH_4[] = "6c9193f62c19d6d248a0c8550e74f287ed2092364959377a9e513451c18959b4";
 const char EXPECTED_HASH_5[] = "1d81b8dacbe1a7e56705effaa8c2ce5f42bc88de26cfed4540618709358872fe";
 
-/* Global cumulative state and history stack */
 char cumulative_state[256] = "";
 size_t jump_history[32];
 size_t jump_history_count = 0;
 
-/* Step match flags */
+// Check again!!!
 bool step_0_matched = false;
 bool step_1_matched = false;
 bool step_2_matched = false;
@@ -61,9 +59,7 @@ void update_state_matching(void) {
     }
 }
 
-/* Jump function for Chunk 0: "Saltar" */
 void jump_to_venice(void) {
-    /* Mangled storage with fixed PRNG seed (1337) */
     char scrambled[6] = { 0x61, 0x53, 0x74, 0x6c, 0x72, 0x61 };
     char restored[6];
     restored[0] = scrambled[1];
@@ -83,9 +79,7 @@ void jump_to_venice(void) {
     }
 }
 
-/* Jump function for Chunk 1: "e_e_di" */
 void jump_to_florence(void) {
-    /* Mangled storage with fixed PRNG seed (1338) */
     char scrambled[6] = { 0x65, 0x5f, 0x64, 0x65, 0x5f, 0x69 };
     char restored[6];
     restored[0] = scrambled[0];
@@ -105,9 +99,7 @@ void jump_to_florence(void) {
     }
 }
 
-/* Jump function for Chunk 2: "fficil" */
 void jump_to_naples(void) {
-    /* Mangled storage with fixed PRNG seed (1339) */
     char scrambled[6] = { 0x69, 0x69, 0x63, 0x66, 0x66, 0x6c };
     char restored[6];
     restored[0] = scrambled[4];
@@ -127,9 +119,7 @@ void jump_to_naples(void) {
     }
 }
 
-/* Jump function for Chunk 3: "e_ma_i" */
 void jump_to_verona(void) {
-    /* Mangled storage with fixed PRNG seed (1340) */
     char scrambled[6] = { 0x5f, 0x61, 0x69, 0x6d, 0x5f, 0x65 };
     char restored[6];
     restored[0] = scrambled[5];
@@ -149,9 +139,7 @@ void jump_to_verona(void) {
     }
 }
 
-/* Jump function for Chunk 4: "o_sono" */
 void jump_to_palermo(void) {
-    /* Mangled storage with fixed PRNG seed (1341) */
     char scrambled[6] = { 0x5f, 0x73, 0x6e, 0x6f, 0x6f, 0x6f };
     char restored[6];
     restored[0] = scrambled[5];
@@ -171,9 +159,7 @@ void jump_to_palermo(void) {
     }
 }
 
-/* Jump function for Chunk 5: "_Mario" */
 void jump_to_milan(void) {
-    /* Mangled storage with fixed PRNG seed (1342) */
     char scrambled[6] = { 0x6f, 0x5f, 0x69, 0x72, 0x4d, 0x61 };
     char restored[6];
     restored[0] = scrambled[1];
@@ -193,7 +179,7 @@ void jump_to_milan(void) {
     }
 }
 
-/* Revert function to roll back the last traversal step */
+// Made a mistake, yikes!
 void undo_jump(void) {
     if (jump_history_count > 0) {
         size_t last_len = jump_history[--jump_history_count];
@@ -206,9 +192,7 @@ void undo_jump(void) {
 }
 
 int main(void) {
-    printf("=== Jump Around & Find Out CTF Challenge ===\n");
-    printf("Target sequence of 6 jump functions must be invoked in order.\n");
-    printf("Use a debugger (e.g. GDB) to call functions and inspect step match flags.\n");
+    printf("I must have forgotten to finish this...\n");
     printf("Press Enter to exit...\n");
     getchar();
     return 0;

@@ -35,7 +35,6 @@ def generate():
 
     # Generate C code
     c_code = []
-    c_code.append('/* Auto-generated C CTF Challenge source */')
     c_code.append('#include <stdio.h>')
     c_code.append('#include <string.h>')
     c_code.append('#include <stdbool.h>')

@@ -1,5 +1,8 @@
 # Exceptional Lock — CTF Challenge Documentation
 
+> [!IMPORTANT]  
+> Only the "challenge" directory must be made public
+
 **Exceptional Lock** is a beginner-to-intermediate C++ reverse engineering CTF challenge. Standard password input validation appears to reject non-matching inputs, but supplying a specifically constructed 213-character input triggers a custom C++ exception (`panic`) that redirects execution into a hidden flag-decryption routine.
 
 ---
@@ -41,7 +44,8 @@ cmake --build build
 ```
 
 This generates two binaries:
-- `./build/decrypt-str`: The main challenge binary distributed to CTF players.
+- `./build/exceptional-locking-mechanism`: The main binary for use by the developer.
+- `./challenge/exceptional-locking-mechanism`: Final Challenge binary 
 - `./build/encrypt-str`: Helper utility used by challenge author to re-encrypt new flags/passwords.
 
 ---

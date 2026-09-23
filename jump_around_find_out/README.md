@@ -1,5 +1,8 @@
 # Jump Around & Find Out - CTF Challenge
 
+> [!IMPORTANT]  
+> Only the "challenge" directory must be made public
+
 A custom C/C++ Reverse Engineering CTF (Capture The Flag) challenge designed for binary analysis and debugger-based memory inspection.
 
 ## Overview

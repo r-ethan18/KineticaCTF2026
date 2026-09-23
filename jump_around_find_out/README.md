@@ -1,6 +1,6 @@
 # Jump Around & Find Out - CTF Challenge
 
-A custom C/C++ Reverse Engineering CTF (Capture The Flag) challenge designed for binary analysis, function patching, and debugger-based memory inspection.
+A custom C/C++ Reverse Engineering CTF (Capture The Flag) challenge designed for binary analysis and debugger-based memory inspection.
 
 ## Overview
 
@@ -14,8 +14,7 @@ A custom C/C++ Reverse Engineering CTF (Capture The Flag) challenge designed for
 ```text
 ├── Makefile                   # Build configuration
 ├── flake.nix                  # Nix dev environment configuration
-├── executable/
-│   ├── INSTRUCTIONS.md        # Distribution patching notes
+├── challenge/
 │   └── jump-around-find-out   # Standalone binary target for distribution
 ├── scripts/
 │   └── generate_challenge.py  # Python script to generate src/main.c

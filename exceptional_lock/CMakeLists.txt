@@ -3,6 +3,10 @@ project(ExceptionalLockChallenge LANGUAGES C CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_SKIP_BUILD_RPATH TRUE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "")
+
 # Ensure release defaults or apply strip flags directly
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 

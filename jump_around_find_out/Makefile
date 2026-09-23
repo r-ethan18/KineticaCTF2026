@@ -1,7 +1,7 @@
 CC ?= gcc
 CXX ?= g++
-CFLAGS ?= -Wall -Wextra -std=c11 -I./src -g
-CXXFLAGS ?= -Wall -Wextra -std=c++17 -I./src -g
+CFLAGS ?= -Wall -Wextra -std=c11 -I./src
+CXXFLAGS ?= -Wall -Wextra -std=c++17 -I./src
 TARGET = jump-around-find-out
 
 C_SRC = src/main.c

@@ -79,26 +79,6 @@ void jump_to_venice(void) {
     }
 }
 
-void jump_to_florence(void) {
-    char scrambled[6] = { 0x65, 0x5f, 0x64, 0x65, 0x5f, 0x69 };
-    char restored[6];
-    restored[0] = scrambled[0];
-    restored[1] = scrambled[1];
-    restored[2] = scrambled[3];
-    restored[3] = scrambled[4];
-    restored[4] = scrambled[2];
-    restored[5] = scrambled[5];
-    size_t len = strlen(cumulative_state);
-    if (len + 6 < sizeof(cumulative_state)) {
-        memcpy(cumulative_state + len, restored, 6);
-        cumulative_state[len + 6] = '\0';
-        if (jump_history_count < 32) {
-            jump_history[jump_history_count++] = 6;
-        }
-        update_state_matching();
-    }
-}
-
 void jump_to_naples(void) {
     char scrambled[6] = { 0x69, 0x69, 0x63, 0x66, 0x66, 0x6c };
     char restored[6];
@@ -119,25 +99,6 @@ void jump_to_naples(void) {
     }
 }
 
-void jump_to_verona(void) {
-    char scrambled[6] = { 0x5f, 0x61, 0x69, 0x6d, 0x5f, 0x65 };
-    char restored[6];
-    restored[0] = scrambled[5];
-    restored[1] = scrambled[0];
-    restored[2] = scrambled[3];
-    restored[3] = scrambled[1];
-    restored[4] = scrambled[4];
-    restored[5] = scrambled[2];
-    size_t len = strlen(cumulative_state);
-    if (len + 6 < sizeof(cumulative_state)) {
-        memcpy(cumulative_state + len, restored, 6);
-        cumulative_state[len + 6] = '\0';
-        if (jump_history_count < 32) {
-            jump_history[jump_history_count++] = 6;
-        }
-        update_state_matching();
-    }
-}
 
 void jump_to_palermo(void) {
     char scrambled[6] = { 0x5f, 0x73, 0x6e, 0x6f, 0x6f, 0x6f };
@@ -168,6 +129,46 @@ void jump_to_milan(void) {
     restored[3] = scrambled[3];
     restored[4] = scrambled[2];
     restored[5] = scrambled[0];
+    size_t len = strlen(cumulative_state);
+    if (len + 6 < sizeof(cumulative_state)) {
+        memcpy(cumulative_state + len, restored, 6);
+        cumulative_state[len + 6] = '\0';
+        if (jump_history_count < 32) {
+            jump_history[jump_history_count++] = 6;
+        }
+        update_state_matching();
+    }
+}
+
+void jump_to_florence(void) {
+    char scrambled[6] = { 0x65, 0x5f, 0x64, 0x65, 0x5f, 0x69 };
+    char restored[6];
+    restored[0] = scrambled[0];
+    restored[1] = scrambled[1];
+    restored[2] = scrambled[3];
+    restored[3] = scrambled[4];
+    restored[4] = scrambled[2];
+    restored[5] = scrambled[5];
+    size_t len = strlen(cumulative_state);
+    if (len + 6 < sizeof(cumulative_state)) {
+        memcpy(cumulative_state + len, restored, 6);
+        cumulative_state[len + 6] = '\0';
+        if (jump_history_count < 32) {
+            jump_history[jump_history_count++] = 6;
+        }
+        update_state_matching();
+    }
+}
+
+void jump_to_verona(void) {
+    char scrambled[6] = { 0x5f, 0x61, 0x69, 0x6d, 0x5f, 0x65 };
+    char restored[6];
+    restored[0] = scrambled[5];
+    restored[1] = scrambled[0];
+    restored[2] = scrambled[3];
+    restored[3] = scrambled[1];
+    restored[4] = scrambled[4];
+    restored[5] = scrambled[2];
     size_t len = strlen(cumulative_state);
     if (len + 6 < sizeof(cumulative_state)) {
         memcpy(cumulative_state + len, restored, 6);

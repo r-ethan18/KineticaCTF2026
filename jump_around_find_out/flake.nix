@@ -14,6 +14,8 @@
           cmake
           gnumake
           clang-tools
+          patchelf
+          bear
         ];
         buildInputs = with pkgs; [
           gcc

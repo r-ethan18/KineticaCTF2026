@@ -55,18 +55,18 @@ endif()
 macro(setup_challenge_outputs TARGET_NAME)
     # 1. Ensure challenge directory exists and copy binary post-build
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/challenge"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/challenge/public"
         COMMAND ${CMAKE_COMMAND} -E copy 
             "$<TARGET_FILE:${TARGET_NAME}>" 
-            "${CMAKE_SOURCE_DIR}/challenge/$<TARGET_FILE_NAME:${TARGET_NAME}>"
+            "${CMAKE_SOURCE_DIR}/challenge/public/$<TARGET_FILE_NAME:${TARGET_NAME}>"
         COMMENT "Copying ${TARGET_NAME} to challenge/ directory"
     )
 
     # 2. Equivalent of your NixOS patchelf snippet
     if(IS_NIXOS)
         add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-            COMMAND patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "${CMAKE_SOURCE_DIR}/challenge/$<TARGET_FILE_NAME:${TARGET_NAME}>"
-            COMMAND patchelf --remove-rpath "${CMAKE_SOURCE_DIR}/challenge/$<TARGET_FILE_NAME:${TARGET_NAME}>"
+            COMMAND patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 "${CMAKE_SOURCE_DIR}/challenge/public/$<TARGET_FILE_NAME:${TARGET_NAME}>"
+            COMMAND patchelf --remove-rpath "${CMAKE_SOURCE_DIR}/challenge/public/$<TARGET_FILE_NAME:${TARGET_NAME}>"
             COMMENT "Applying NixOS patchelf fix to challenge/${TARGET_NAME}"
         )
     endif()

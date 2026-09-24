@@ -17,11 +17,11 @@ generate:
 
 $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $(TARGET)
-	mkdir -p challenge
-	cp $(TARGET) challenge/$(TARGET)
+	mkdir -p challenge/public
+	cp $(TARGET) challenge/public/$(TARGET)
 	@if [ -e /etc/NIXOS ] || ( [ -f /etc/os-release ] && grep -qi 'nixos' /etc/os-release ); then \
-		patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 challenge/$(TARGET) && \
-		patchelf --remove-rpath challenge/$(TARGET) ; \
+		patchelf --set-interpreter /lib64/ld-linux-x86-64.so.2 challenge/public/$(TARGET) && \
+		patchelf --remove-rpath challenge/public/$(TARGET) ; \
 	fi
 
 %.o: %.c
@@ -34,6 +34,6 @@ compile_commands.json:
 	bear -- $(MAKE) clean all
 
 clean:
-	rm -f $(TARGET) challenge/$(TARGET) src/*.o compile_commands.json
+	rm -f $(TARGET) challenge/public/$(TARGET) src/*.o compile_commands.json
 
 .PHONY: all build generate clean compile_commands.json

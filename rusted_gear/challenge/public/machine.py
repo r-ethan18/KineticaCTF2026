@@ -1,4 +1,4 @@
-from gears import oil_teh_greas
+from gears import oil_the_gears
 from gears import turn_the_gears
 from time import sleep
 
@@ -8,7 +8,7 @@ print("Inhaling the air...")
 sleep(1)
 print("Oiling the gears...")
 sleep(1)
-if oil_teh_greas():
+if oil_the_gears():
     print("Turning the gears...")
     sleep(1)
     print("Here is what you asked for: ", end="")

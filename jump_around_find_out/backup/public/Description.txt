@@ -1,0 +1,7 @@
+Title: Jump Around Find Out
+
+This was one of Leonardo's many unfinished works, a really clever contraption that requires its user to go on a pilgrimage through six prominent cities of Italy by jumping between them to attain what they seek.
+Sadly Leonardo himself forgot how this one works as he forgot to create an accessible method of interaction with this contraption (he is pretty forgetful like that).
+But, just because the grunts couldn't figure out how this one works, does not mean that an intellectual like you cannot make it work!
+
+NOTE: The flag will not be enclosed with "snuc{}", submitting the flag should still be in the standard format, i.e. snuc{<flag_value>}
